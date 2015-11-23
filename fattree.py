@@ -136,15 +136,15 @@ def pingTest(net):
     net.pingAll()
 
 
-def createTopo():
+def createTopo(pod, density, ip="127.0.0.1", port=6633, bw_c2a=0.2, bw_a2e=0.1, bw_h2a=0.05):
     logging.debug("LV1 Create Fattree")
-    topo = Fattree(8, 4)
+    topo = Fattree(pod, density)
     topo.createTopo()
-    topo.createLink(bw_c2a=0.2, bw_a2e=0.1, bw_h2a=0.05)
+    topo.createLink(bw_c2a=bw_c2a, bw_a2e=bw_a2e, bw_h2a=bw_h2a)
 
     logging.debug("LV1 Start Mininet")
-    CONTROLLER_IP = "127.0.0.1"
-    CONTROLLER_PORT = 6633
+    CONTROLLER_IP = ip
+    CONTROLLER_PORT = port
     net = Mininet(topo=topo, link=TCLink, controller=None, autoSetMacs=True,
                   autoStaticArp=True)
     net.addController(
@@ -171,4 +171,4 @@ if __name__ == '__main__':
     if os.getuid() != 0:
         logger.debug("You are NOT root")
     elif os.getuid() == 0:
-        createTopo()
+        createTopo(8, 4)
